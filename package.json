@@ -1,0 +1,11 @@
+{
+  "name": "tp1_csv_api",
+  "version": "1.0.0",
+  "description": "CSV Parser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pierre-Emmanuel Dacquet",
+  "license": "ISC"
+}
