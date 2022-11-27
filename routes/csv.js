@@ -2,19 +2,48 @@ const router = require('express').Router();
 const path = require('path');
 const {parse} = require('csv-parse');
 const fs = require('fs');
+const https = require('https');
+const unzipper = require('unzipper');
 
-router.get('/tp1', async (req, res) => {
+
+router.get('/tp1', (req, res) => {
+
+  // if(!exists(path.join(__dirname,'../','/StockEtablissementLiensSuccession_utf8.csv')))
 
   const datas = [];
 
-  fs.createReadStream(path.join(__dirname,'../','/StockEtablissementLiensSuccession_utf8.csv'))
+    // console.log("downloading file")
+    // var file = fs.createWriteStream("StockEtablissementLiensSuccession_utf8.zip");
+
+    // var request = https.get("https://files.data.gouv.fr/insee-sirene/StockEtablissementLiensSuccession_utf8.zip", function(response) {
+    //   response.pipe(file);
+
+    //   file.on("finish", () => {
+    //     file.close();
+    //     console.log("Download Completed");
+    //   });
+    // });
+
+  fs.createReadStream(path.join(__dirname,'../','/StockEtablissementLiensSuccession_utf8.zip'))
+  .pipe(unzipper.Parse())
+  .on('entry', function (entry) {
+    var fileName = entry.path;
+    console.log(fileName)
+    if (fileName === "StockEtablissementLiensSuccession_utf8.csv") {
+      entry.pipe(fs.createWriteStream(path.join(__dirname,'../','/StockEtablissementLiensSuccession_utf8.csv')));
+    } else {
+      entry.autodrain();
+    }
+  });
+
+  fs.createReadStream(path.join(__dirname,'../','/data.csv'))
     .pipe(
 
       parse({
 
         delimiter: ',',
         from: 1,
-        to: 100000,
+        to: 5000,
         columns: true
 
       })
@@ -39,7 +68,6 @@ router.get('/tp1', async (req, res) => {
       // Loop on datas for counting both variables
       datas.forEach((data) => {
 
-        console.log(data.date);
         if (data.date < Date('2022-11-01')) {
             count_rows += 1;
 
