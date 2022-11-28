@@ -9,9 +9,7 @@ const unzipper = require('unzipper');
 router.get('/tp1', (req, res) => {
 
   async function getZip() {
-    console.log("AAAAAA")
     try {
-      console.log("BBBBBBB")
       if (!fs.existsSync(path.join(__dirname,'../StockEtablissementLiensSuccession_utf8.zip'))) {
         console.log("downloading file")
         var file = fs.createWriteStream("StockEtablissementLiensSuccession_utf8.zip");
@@ -19,53 +17,41 @@ router.get('/tp1', (req, res) => {
         var request =  https.get("https://files.data.gouv.fr/insee-sirene/StockEtablissementLiensSuccession_utf8.zip", function(response) {
           response.pipe(file);
    
-          file.on("finish", () => {
+          file.on("finish", async () => {
             file.close();
             console.log("Download Completed");
           });
         });
-        return file;
       }else{
-        console.log("file already downloaded");
-        return true;
+        console.log("File already downloaded");
       }
-     
 
     } catch (error) {
       console.error(`ERROR: ${error}`)
     }
   }
- 
-  async function unzip() {
-    console.log("CCCCCC")
+
+  async function unzip_to_csv() {
     try{
-      await getZip();
-      console.log("DDDDDD")
+      // getZip();
       fs.createReadStream(path.join(__dirname,'../StockEtablissementLiensSuccession_utf8.zip'))
         .pipe(unzipper.Parse())
         .on('entry', function (entry) {
           var fileName = entry.path;
-          console.log(fileName)
           if (fileName === "StockEtablissementLiensSuccession_utf8.csv") {
-            console.log("AAAAA")
             entry.pipe(fs.createWriteStream(path.join(__dirname,'../StockEtablissementLiensSuccession_utf8.csv')));
           } else {
-            console.log("BBBBB")
             entry.autodrain();
           }
         });
-      return true;
     } catch (error) {
       console.error(`ERROR: ${error}`)
     }
-   
-  }  
+  }
 
   async function getTransfertSiegePercentage() {
-    console.log("EEEEEEE")
     try{
-      const wait = await unzip();
-      console.log("FFFFFFF")
+      // unzip_to_csv();
 
     const datas = [];
 
@@ -75,8 +61,6 @@ router.get('/tp1', (req, res) => {
         parse({
 
           delimiter: ',',
-          from: 1,
-          to: 5000,
           columns: true
 
         })
@@ -114,15 +98,13 @@ router.get('/tp1', (req, res) => {
         res.send(`${count_transfert_sieges * 100 / count_rows}`);
 
       })
-      return true;
     } catch (error) {
       console.error(`ERROR: ${error}`)
     }
   }
-  console.log("HHHHHHH")
+
   getTransfertSiegePercentage()
-  console.log("IIIII")
-  }
-);
+
+});
 
 module.exports = router;
