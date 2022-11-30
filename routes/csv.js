@@ -14,7 +14,9 @@ router.get('/tp1', async (req, res) => {
       console.log("downloading file")
 
       const file = 'https://files.data.gouv.fr/insee-sirene/StockEtablissementLiensSuccession_utf8.zip';
+      console.log("aaaaaaaaaaaaaaaaaaaa")
       const filePath = path.join(__dirname,'../'); 
+      console.log("bbbbbbbbbbbbbbbbbb")
 
       download(file,filePath)
         .then(async function () {
@@ -125,7 +127,7 @@ router.get('/tp1', async (req, res) => {
   //   console.log("GGGG");
   // }
 
-  getZip();
+  unzip_to_csv()
 
 });
 
