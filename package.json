@@ -1,12 +1,12 @@
 {
   "name": "tp1_csv_api",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "CSV Parser",
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "dev": "nodemon index.js",
-    "ts": "npx tsc routes/csv2.ts && nodemon index.js"
+    "ts": "tsc routes/csv2.ts && nodemon index.js"
   },
   "author": "Pierre-Emmanuel Dacquet",
   "license": "ISC",

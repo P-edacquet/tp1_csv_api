@@ -5,9 +5,9 @@ const fs = require('fs');
 const unzipper = require('unzip-stream')
 const download = require('download');
 
-const zip_path:string = path.join(__dirname,'../StockEtablissementLiensSuccession_utf8.zip')
+router.get('/tp2', async (res:any) => {
 
-router.get('/tp2', async (req, res) => {
+  const zip_path:string = path.join(__dirname,'../StockEtablissementLiensSuccession_utf8.zip')
 
   async function getZip() {
     try {
@@ -36,18 +36,23 @@ router.get('/tp2', async (req, res) => {
     fs.createReadStream(zip_path)
       .pipe(unzipper.Parse())
       .on('entry', function (entry:any) {
-        console.log(entry.path)
-        console.log("AAAAAAA")
-        console.log(entry)
         const fileName:string = entry.path;
         if (fileName === "StockEtablissementLiensSuccession_utf8.csv") {
           entry.pipe(parse()) 
           .on('data', (data:any) => {
-            console.log(count_rows)
+
+            //*************************/
+            // IF YOU WANT TO SEE     */
+            // THE PARSE PART WORKING,*/
+            // UNCOMMENT THE TWO NEXT */
+            // CONSOLE.LOG            */
+            //*************************/
+
+            // console.log(count_rows)
             count_rows += 1;
             if (data.transfertSiege == "true") {
               count_transfert_sieges += 1;
-              console.log(count_transfert_sieges + "AAAAAAAAAAAAA")
+              // console.log("count_transfert_sieges: " + count_transfert_sieges)
             }
           })
           .on('end', () => {
@@ -61,14 +66,9 @@ router.get('/tp2', async (req, res) => {
   }
 
   async function run() {
-    console.log("AAAA");
-
     if (!fs.existsSync(zip_path)) {
-      console.log("BBBB");
       await getZip();
-      console.log("CCCC");
     }else{
-      console.log("C2C2C2C2");
       console.log("zip file already downloaded");
       unzip_to_csv();
     }

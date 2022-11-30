@@ -42,7 +42,7 @@ var fs = require('fs');
 var unzipper = require('unzip-stream');
 var download = require('download');
 var zip_path = path.join(__dirname, '../StockEtablissementLiensSuccession_utf8.zip');
-router.get('/tp2', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+router.get('/tp2', function (res) { return __awaiter(_this, void 0, void 0, function () {
     function getZip() {
         return __awaiter(this, void 0, void 0, function () {
             var file, filePath;
@@ -77,9 +77,6 @@ router.get('/tp2', function (req, res) { return __awaiter(_this, void 0, void 0,
         fs.createReadStream(zip_path)
             .pipe(unzipper.Parse())
             .on('entry', function (entry) {
-            console.log(entry.path);
-            console.log("AAAAAAA");
-            console.log(entry);
             var fileName = entry.path;
             if (fileName === "StockEtablissementLiensSuccession_utf8.csv") {
                 entry.pipe(parse())
@@ -106,16 +103,12 @@ router.get('/tp2', function (req, res) { return __awaiter(_this, void 0, void 0,
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log("AAAA");
                         if (!!fs.existsSync(zip_path)) return [3 /*break*/, 2];
-                        console.log("BBBB");
                         return [4 /*yield*/, getZip()];
                     case 1:
                         _a.sent();
-                        console.log("CCCC");
                         return [3 /*break*/, 3];
                     case 2:
-                        console.log("C2C2C2C2");
                         console.log("zip file already downloaded");
                         unzip_to_csv();
                         _a.label = 3;
@@ -125,7 +118,7 @@ router.get('/tp2', function (req, res) { return __awaiter(_this, void 0, void 0,
         });
     }
     return __generator(this, function (_a) {
-        unzip_to_csv();
+        run();
         return [2 /*return*/];
     });
 }); });
