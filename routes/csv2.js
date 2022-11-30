@@ -41,8 +41,7 @@ var parse = require('csv-parser');
 var fs = require('fs');
 var unzipper = require('unzip-stream');
 var download = require('download');
-var zip_path = path.join(__dirname, '../StockEtablissementLiensSuccession_utf8.zip');
-router.get('/tp2', function (res) { return __awaiter(_this, void 0, void 0, function () {
+router.get('/tp2', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     function getZip() {
         return __awaiter(this, void 0, void 0, function () {
             var file, filePath;
@@ -58,7 +57,6 @@ router.get('/tp2', function (res) { return __awaiter(_this, void 0, void 0, func
                                 console.log('Download Completed');
                                 console.log("starting unzip_to_csv");
                                 unzip_to_csv();
-                                console.log("unzip_to_csv done");
                                 return [2 /*return*/];
                             });
                         });
@@ -81,11 +79,17 @@ router.get('/tp2', function (res) { return __awaiter(_this, void 0, void 0, func
             if (fileName === "StockEtablissementLiensSuccession_utf8.csv") {
                 entry.pipe(parse())
                     .on('data', function (data) {
-                    console.log(count_rows);
+                    //*************************/
+                    // IF YOU WANT TO SEE     */
+                    // THE PARSE PART WORKING,*/
+                    // UNCOMMENT THE TWO NEXT */
+                    // CONSOLE.LOG            */
+                    //*************************/
+                    // console.log(count_rows)
                     count_rows += 1;
                     if (data.transfertSiege == "true") {
                         count_transfert_sieges += 1;
-                        console.log(count_transfert_sieges + "AAAAAAAAAAAAA");
+                        // console.log("count_transfert_sieges: " + count_transfert_sieges)
                     }
                 })
                     .on('end', function () {
@@ -109,7 +113,7 @@ router.get('/tp2', function (res) { return __awaiter(_this, void 0, void 0, func
                         _a.sent();
                         return [3 /*break*/, 3];
                     case 2:
-                        console.log("zip file already downloaded");
+                        console.log("zip file already downloaded, starting unzip_to_csv");
                         unzip_to_csv();
                         _a.label = 3;
                     case 3: return [2 /*return*/];
@@ -117,7 +121,9 @@ router.get('/tp2', function (res) { return __awaiter(_this, void 0, void 0, func
             });
         });
     }
+    var zip_path;
     return __generator(this, function (_a) {
+        zip_path = path.join(__dirname, '../StockEtablissementLiensSuccession_utf8.zip');
         run();
         return [2 /*return*/];
     });

@@ -21,7 +21,6 @@ router.get('/tp1', async (req, res) => {
           console.log('Download Completed');
           console.log("starting unzip_to_csv")
           unzip_to_csv();
-          console.log("unzip_to_csv done")
         })
     } catch (error) {
       console.error(`ERROR: ${error}`)
@@ -40,17 +39,24 @@ router.get('/tp1', async (req, res) => {
         if (fileName === "StockEtablissementLiensSuccession_utf8.csv") {
           entry.pipe(parse()) 
           .on('data', (data) => {
-            console.log(count_rows)
+            //*************************/
+            // IF YOU WANT TO SEE     */
+            // THE PARSE PART WORKING,*/
+            // UNCOMMENT THE TWO NEXT */
+            // CONSOLE.LOG            */
+            //*************************/
+
+            // console.log(count_rows)
             if (data.dateLienSuccession < Date('2022-11-01')) {
               count_rows += 1;
               if (data.transfertSiege == "true") {
                 count_transfert_sieges += 1;
-                console.log(count_transfert_sieges + "AAAAAAAAAAAAA")
-              }
+                // console.log("count_transfert_sieges: " + count_transfert_sieges)
+            }
             }
           })
           .on('end', () => {
-          res.send(`${count_transfert_sieges * 100 / count_rows}`);
+          res.send(count_transfert_sieges * 100 / count_rows);
         })
         } else {
           console.log("Error")
@@ -60,12 +66,10 @@ router.get('/tp1', async (req, res) => {
   }
 
   async function run() {
-    console.log("AAAA");
-
     if (!fs.existsSync(zip_path)) {
       await getZip();
     }else{
-      console.log("zip file already downloaded");
+      console.log("zip file already downloaded, starting unzip_to_csv");
       unzip_to_csv();
     }
   }

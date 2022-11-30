@@ -5,7 +5,7 @@ const fs = require('fs');
 const unzipper = require('unzip-stream')
 const download = require('download');
 
-router.get('/tp2', async (res:any) => {
+router.get('/tp2', async (req, res) => {
 
   const zip_path:string = path.join(__dirname,'../StockEtablissementLiensSuccession_utf8.zip')
 
@@ -21,7 +21,6 @@ router.get('/tp2', async (res:any) => {
           console.log('Download Completed');
           console.log("starting unzip_to_csv")
           unzip_to_csv();
-          console.log("unzip_to_csv done")
         })
     } catch (error) {
       console.error(`ERROR: ${error}`)
@@ -57,7 +56,7 @@ router.get('/tp2', async (res:any) => {
           })
           .on('end', () => {
             res.send(`${count_transfert_sieges * 100 / count_rows}`);
-        })
+          })
         } else {
           console.log("Error")
           entry.autodrain();
@@ -69,7 +68,7 @@ router.get('/tp2', async (res:any) => {
     if (!fs.existsSync(zip_path)) {
       await getZip();
     }else{
-      console.log("zip file already downloaded");
+      console.log("zip file already downloaded, starting unzip_to_csv");
       unzip_to_csv();
     }
   }
